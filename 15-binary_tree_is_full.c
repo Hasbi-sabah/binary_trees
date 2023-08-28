@@ -2,7 +2,7 @@
 
 
 /**
- *
+ * binary_tree_is_full - 
  *
  *
  */
