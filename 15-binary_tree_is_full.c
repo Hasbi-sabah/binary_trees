@@ -2,9 +2,9 @@
 
 
 /**
- * binary_tree_is_full - 
- *
- *
+ * binary_tree_is_full - check of all nodes have a left/right nodes
+ * @tree: the binary tree
+ * Return: 0 (not full) | 1 (full)
  */
 int binary_tree_is_full(const binary_tree_t *tree)
 {
