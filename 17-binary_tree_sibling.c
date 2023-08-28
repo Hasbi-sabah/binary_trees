@@ -2,9 +2,9 @@
 
 
 /**
- * binary_tree_sibling - 
- *
- *
+ * binary_tree_sibling - get a node's sibiling
+ * @node: the node
+ * Return: pointer to the sibling
  */
 binary_tree_t *binary_tree_sibling(binary_tree_t *node)
 {
