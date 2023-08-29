@@ -2,44 +2,43 @@
 #include <limits.h>
 
 /**
- *
- *
- *
+ * insertNode - insert node helper
+ * @tree: BST
+ * @node: node to isnert
+ * Return: node (success) | NULL (failed)
  */
 bst_t *insertNode(bst_t **tree, bst_t *node)
 {
 	if ((*tree)->n == node->n)
-		return NULL;
+	{
+		free(node);
+		return (NULL);
+	}
 
 	if ((*tree)->n > node->n)
 	{
 		if ((*tree)->left)
 			return (insertNode(&(*tree)->left, node));
-		else
-		{
-			(*tree)->left = node;
-			node->parent = (*tree);
-			return (node);
-		}
+
+		(*tree)->left = node;
+		node->parent = (*tree);
+		return (node);
 	}
-	if ((*tree)->n < node->n)
+	else
 	{
 		if ((*tree)->right)
 			return (insertNode(&(*tree)->right, node));
-		else
-		{
-			(*tree)->right = node;
-			node->parent = (*tree);
-			return (node);
-		}
-	}
-	return (NULL);
 
+		(*tree)->right = node;
+		node->parent = (*tree);
+		return (node);
+	}
 }
 /**
- * binary_tree_is_bst - check if bt is bst
+ * bst_insert - insert a new node in a BST
  * @tree: tree
- * Return: 0 or 1
+ * @value: value of the new node
+ * Return: node (success) | NULL (failed)
  */
 bst_t *bst_insert(bst_t **tree, int value)
 {
