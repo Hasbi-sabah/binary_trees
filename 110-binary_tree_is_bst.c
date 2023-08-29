@@ -28,7 +28,7 @@ int inorder(const binary_tree_t *tree, int *prev)
 		return (1);
 	if (!inorder(tree->left, prev))
 		return (0);
-	if (*prev > tree->n)
+	if (*prev >= tree->n)
 		return (0);
 	*prev = tree->n;
 	return (inorder(tree->right, prev));
