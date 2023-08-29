@@ -61,5 +61,6 @@ binary_tree_t *binary_tree_rotate_right(binary_tree_t *tree);
 /**-------------- BST ---------------------------------**/
 int binary_tree_is_bst(const binary_tree_t *tree);
 int inorder(const binary_tree_t *tree, int *prev);
+bst_t *bst_insert(bst_t **tree, int value);
 
 #endif /* _BINARY_TREES_H_ */
