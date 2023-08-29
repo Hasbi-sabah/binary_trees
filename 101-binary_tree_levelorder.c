@@ -1,99 +1,37 @@
 #include "binary_trees.h"
+#include <stdlib.h>
 
 
-/**
- * createQueue - Create a new queue
- *
- * This function allocates memory for a new queue.
- *
- * Return: A pointer to the newly created queue, or NULL on failure.
- */
-queue_t *createQueue()
+size_t binary_tree_size(const binary_tree_t *tree)
 {
-	queue_t *queue = (queue_t *)malloc(sizeof(queue_t));
+	if (!tree)
+		return 0;
 
-	queue->head = NULL;
-	queue->tail = NULL;
-	return (queue);
+	return 1 + binary_tree_size(tree->left) + binary_tree_size(tree->right);
 }
 
-/**
- * enqueue - Add a node to the end of the queue
- * @queue: Pointer to the queue
- * @node: Pointer to the binary tree node to be enqueued
- *
- * This function adds a new node containing the given binary
- * tree node to the end of the queue.
- */
-void enqueue(queue_t *queue, binary_tree_t *node)
+void saver(const binary_tree_t *tree, int *tree_arr, int index)
 {
-	queueNode_t *newNode = (queueNode_t *)malloc(sizeof(queueNode_t));
-
-	newNode->node = node;
-	newNode->next = NULL;
-
-	if (queue->tail == NULL)
-	{
-		queue->head = newNode;
-		queue->tail = newNode;
+	if (!tree)
 		return;
-	}
-	queue->tail->next = newNode;
-	queue->tail = newNode;
+	tree_arr[index] = tree->n;
+	if (tree->left)
+		saver(tree->left, tree_arr, (2 * index) + 1);
+	if (tree->right)
+		saver(tree->right, tree_arr, (2 * index) + 2);
 }
 
-/**
- * dequeue - Remove and return the front node from the queue
- * @queue: Pointer to the queue
- * Return: A pointer to the binary tree node.
- */
-binary_tree_t *dequeue(queue_t *queue)
-{
-	queueNode_t *tmp;
-	binary_tree_t *node;
-
-	if (queue->head == NULL)
-		return (NULL);
-
-	tmp = queue->head;
-	node = tmp->node;
-	queue->head = queue->head->next;
-
-	if (queue->head == NULL)
-		queue->tail = NULL;
-
-	free(tmp);
-	return (node);
-}
-
-/**
- * binary_tree_levelorder - function that goes through a binary
- * tree using level-order traversal
- * @tree: tree
- * @func: prit function
- * Return: height
- */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
-	queue_t *queue;
-	binary_tree_t *current;
+	int size, i;
+	int *tree_arr;
 
-	if (tree == NULL || func == NULL)
-		return;
-
-	queue = createQueue();
-	enqueue(queue, (binary_tree_t *)tree);
-
-	while (queue->head != NULL)
-	{
-		current = dequeue(queue);
-		func(current->n);
-
-		if (current->left != NULL)
-			enqueue(queue, current->left);
-		if (current->right != NULL)
-			enqueue(queue, current->right);
-	}
-
-	free(queue);
+	if (!tree || !func)
+		return; 
+	size = binary_tree_size(tree);
+	tree_arr = malloc(size);
+	saver(tree, tree_arr, 0);
+	for (i = 0; i < size; i++)
+		func(tree_arr[i]);
+	free(tree_arr);
 }
