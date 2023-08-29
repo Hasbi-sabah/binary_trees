@@ -1,29 +1,34 @@
 #include "binary_trees.h"
 
-typedef struct queueNode
-{
-	binary_tree_t *node;
-	struct queueNode *next;
-} queueNode_t;
 
-typedef struct queue_s
-{
-	struct queueNode *head;
-	struct queueNode *tail;
-} queue_t;
-
+/**
+ * createQueue - Create a new queue
+ *
+ * This function allocates memory for a new queue.
+ *
+ * Return: A pointer to the newly created queue, or NULL on failure.
+ */
 queue_t *createQueue()
 {
-	queue_t *queue = (queue_t*)malloc(sizeof(queue_t));
+	queue_t *queue = (queue_t *)malloc(sizeof(queue_t));
 
 	queue->head = NULL;
 	queue->tail = NULL;
-	return queue;
+	return (queue);
 }
 
+/**
+ * enqueue - Add a node to the end of the queue
+ * @queue: Pointer to the queue
+ * @node: Pointer to the binary tree node to be enqueued
+ *
+ * This function adds a new node containing the given binary
+ * tree node to the end of the queue.
+ */
 void enqueue(queue_t *queue, binary_tree_t *node)
 {
-	queueNode_t *newNode = (queueNode_t*)malloc(sizeof(queueNode_t));
+	queueNode_t *newNode = (queueNode_t *)malloc(sizeof(queueNode_t));
+
 	newNode->node = node;
 	newNode->next = NULL;
 
@@ -37,13 +42,18 @@ void enqueue(queue_t *queue, binary_tree_t *node)
 	queue->tail = newNode;
 }
 
+/**
+ * dequeue - Remove and return the front node from the queue
+ * @queue: Pointer to the queue
+ * Return: A pointer to the binary tree node.
+ */
 binary_tree_t *dequeue(queue_t *queue)
 {
 	queueNode_t *tmp;
 	binary_tree_t *node;
 
 	if (queue->head == NULL)
-		return NULL;
+		return (NULL);
 
 	tmp = queue->head;
 	node = tmp->node;
@@ -57,8 +67,10 @@ binary_tree_t *dequeue(queue_t *queue)
 }
 
 /**
- * binary_tree_levelorder -
+ * binary_tree_levelorder - function that goes through a binary
+ * tree using level-order traversal
  * @tree: tree
+ * @func: prit function
  * Return: height
  */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
@@ -80,7 +92,7 @@ void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 		if (current->left != NULL)
 			enqueue(queue, current->left);
 		if (current->right != NULL)
-                        enqueue(queue, current->right);
+			enqueue(queue, current->right);
 	}
 
 	free(queue);
