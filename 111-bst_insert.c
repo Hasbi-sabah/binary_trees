@@ -4,18 +4,37 @@
 /**
  *
  *
+ *
  */
-bst_t *insert_node(bst_t **tree, bst_t *node)
+bst_t *insertNode(bst_t **tree, bst_t *node)
 {
-	if (tree == NULL)
-		return (*tree);
+	if ((*tree)->n == node->n)
+		return NULL;
 
 	if ((*tree)->n > node->n)
-		(*tree)->left = insert_node(tree, node);
-	else if ((*tree)->n < node->n)
-		(*tree)->right = insert_node(tree, node);
+	{
+		if ((*tree)->left)
+			return (insertNode(&(*tree)->left, node));
+		else
+		{
+			(*tree)->left = node;
+			node->parent = (*tree);
+			return (node);
+		}
+	}
+	if ((*tree)->n < node->n)
+	{
+		if ((*tree)->right)
+			return (insertNode(&(*tree)->right, node));
+		else
+		{
+			(*tree)->right = node;
+			node->parent = (*tree);
+			return (node);
+		}
+	}
+	return (NULL);
 
-	return (node);
 }
 /**
  * binary_tree_is_bst - check if bt is bst
@@ -27,8 +46,14 @@ bst_t *bst_insert(bst_t **tree, int value)
 	bst_t *node;
 
 	node = binary_tree_node(NULL, value);
-	if (!(*tree))
-		return (node);
+	if (node == NULL)
+		return (NULL);
 
-	return (insert_node(tree, node));
+	if ((*tree) == NULL || !tree)
+	{
+		(*tree) = node;
+		return (node);
+	}
+
+	return (insertNode(tree, node));
 }

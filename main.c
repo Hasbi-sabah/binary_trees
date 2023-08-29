@@ -1,29 +1,23 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "binary_trees.h"
 
 /**
  * main - Entry point
  *
- * Return: Always 0 (Success)
+ * Return: 0 on success, error code on failure
  */
 int main(void)
 {
-    binary_tree_t *root;
-    int bst;
+    bst_t *tree;
+    int array[] = {
+        79, 47, 68, 87, 84, 91, 21, 32, 34, 2,
+        20, 22, 98, 1, 62, 95
+    };
+    size_t n = sizeof(array) / sizeof(array[0]);
 
-    root = binary_tree_node(NULL, 97);
-    root->right = binary_tree_node(root->right, 99);
-    root->right->right = binary_tree_node(root->right, 98);
-
-    binary_tree_print(root);
-    bst = binary_tree_is_bst(root);
-    printf("Is %d bst: %d\n", root->n, bst);
-    bst = binary_tree_is_bst(root->left);
-    printf("Is %d bst: %d\n", root->left->n, bst);
-
-    binary_tree_print(root);
-    bst = binary_tree_is_bst(root);
-    printf("Is %d bst: %d\n", root->n, bst);
+    tree = array_to_bst(array, n);
+    if (!tree)
+        return (1);
+    binary_tree_print(tree);
     return (0);
 }
