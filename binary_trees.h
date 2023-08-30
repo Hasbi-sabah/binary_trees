@@ -64,5 +64,6 @@ int inorder(const binary_tree_t *tree, int *prev);
 bst_t *bst_insert(bst_t **tree, int value);
 bst_t *array_to_bst(int *array, size_t size);
 bst_t *bst_search(bst_t *tree, int value);
+bst_t *bst_remove(bst_t *root, int value);
 
 #endif /* _BINARY_TREES_H_ */
