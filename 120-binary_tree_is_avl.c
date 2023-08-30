@@ -42,16 +42,16 @@ int inorder(const binary_tree_t *tree, int *prev)
  */
 size_t binary_tree_height(const binary_tree_t *tree)
 {
-        size_t lv, rv, max;
+	size_t lv, rv, max;
 
-        if (tree == NULL)
-                return (0);
+	if (tree == NULL)
+		return (0);
 
-        lv = tree->left ? 1 + binary_tree_height(tree->left) : 0;
-        rv = tree->right ? 1 + binary_tree_height(tree->right) : 0;
+	lv = tree->left ? 1 + binary_tree_height(tree->left) : 0;
+	rv = tree->right ? 1 + binary_tree_height(tree->right) : 0;
 
-        max = lv > rv ? lv : rv;
-        return (max);
+	max = lv > rv ? lv : rv;
+	return (max);
 }
 
 /**
@@ -63,21 +63,29 @@ size_t binary_tree_height(const binary_tree_t *tree)
  */
 int binary_tree_balance(const binary_tree_t *tree)
 {
-	size_t lv, rv;
+	int lv, rv;
 
 	if (tree == NULL)
+		return (1);
+
+	if (binary_tree_balance(tree->left) == 0
+	    || binary_tree_balance(tree->right) == 0)
 		return (0);
 
 	lv = tree->left ? 1 + binary_tree_height(tree->left) : 0;
 	rv = tree->right ? 1 + binary_tree_height(tree->right) : 0;
 
-	lv += binary_tree_balance(tree->left);
-	rv += binary_tree_balance(tree->right);
+	if (abs(lv - rv) > 1)
+		return (0);
 
-	return (lv - rv);
+	return (1);
 }
 
-
+/**
+ * binary_tree_is_avl - check if a binary tree is AVL
+ * @tree: binary tree
+ * Return: 0 (not AVL) | 1 (is AVL)
+ */
 int binary_tree_is_avl(const binary_tree_t *tree)
 {
 	int isBST, isBalanced;
@@ -88,9 +96,7 @@ int binary_tree_is_avl(const binary_tree_t *tree)
 	isBST = binary_tree_is_bst(tree);
 	isBalanced = binary_tree_balance(tree);
 
-	printf(">>> %d >>> %d\n", tree->n, isBalanced);
-
-	if (isBST && (abs(isBalanced) <= 1))
+	if (isBST && isBalanced)
 		return (1);
 
 	return (0);
