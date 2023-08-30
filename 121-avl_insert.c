@@ -2,108 +2,82 @@
 #include <limits.h>
 #include <math.h>
 
+void avl_balancer(avl_t **tree, int val);
+
 /**
- * insert_node - insert node helper
- * @tree: BST
- * @node: node to isnert
- * Return: node (success) | NULL (failed)
+ *
+ *
+ *
  */
-bst_t *insert_node(bst_t **tree, bst_t *node)
+avl_t *insert_helper(avl_t **tree, avl_t *parent, avl_t **node, int val)
 {
-	if ((*tree)->n == node->n)
+	if (*tree == NULL)
 	{
-		free(node);
-		return (NULL);
+		*node = binary_tree_node(parent, val);
+		return (*node);
 	}
-
-	if ((*tree)->n > node->n)
+	if ((*tree)->n >val)
 	{
-		if ((*tree)->left)
-			return (insert_node(&(*tree)->left, node));
-
-		(*tree)->left = node;
-		node->parent = (*tree);
-		return (node);
+		(*tree)->left = insert_helper(&(*tree)->left, *tree, node, val);
+		if ((*tree)->left == NULL)
+			return (NULL);
+	}
+	else if ((*tree)->n <val)
+	{
+		(*tree)->right = insert_helper(&(*tree)->right, *tree, node, val);
+		if ((*tree)->right == NULL)
+			return (NULL);
 	}
 	else
-	{
-		if ((*tree)->right)
-			return (insert_node(&(*tree)->right, node));
+		return (*tree);
 
-		(*tree)->right = node;
-		node->parent = (*tree);
-		return (node);
-	}
+	avl_balancer(tree, val);
+	return (*tree);
 }
 
 /**
- * update_avl - fix avl tree after inserting a node
- * @tree: AVL tree
- * @node: node inserted
+ *
+ *
+ *
  */
-void update_avl(avl_t **tree, avl_t *node)
+void avl_balancer(avl_t **tree, int val)
 {
-	size_t isBalanced;
+	int isBalanced;
 
-	if (node->parent->parent == NULL)
-		return;
+	isBalanced = binary_tree_balance(*tree);
+        if (isBalanced > 1 && (*tree)->left->n > val)
+                *tree = binary_tree_rotate_right(*tree);
 
-	isBalanced = binary_tree_balance(node->parent->parent);
-
-	if (abs((int)isBalanced) <= 1)
-		return;
-
-	if ((int)isBalanced < 0)
-	{
-		if (node->parent->left == NULL)
-			node = binary_tree_rotate_left(node->parent->parent);
-		else
-		{
-			node = binary_tree_rotate_right(node->parent);
-			node = binary_tree_rotate_left(node->parent);
-		}
-	}
-	else
-	{
-		if (node->parent->right == NULL)
-			node = binary_tree_rotate_right(node->parent->parent);
-		else
-		{
-			node = binary_tree_rotate_left(node->parent);
-			node = binary_tree_rotate_right(node->parent);
-		}
-	}
-	if (node->parent == NULL)
-		(*tree) = node;
-	update_avl(tree, node);
+        else if (isBalanced > 1 && (*tree)->left->n < val)
+        {
+                (*tree)->left = binary_tree_rotate_left((*tree)->left);
+                *tree = binary_tree_rotate_right(*tree);
+        }
+        else if (isBalanced < -1 && (*tree)->right->n < val)
+                *tree = binary_tree_rotate_left(*tree);
+        else if (isBalanced < -1 && (*tree)->right->n > val)
+        {
+                (*tree)->right = binary_tree_rotate_right((*tree)->right);
+                *tree = binary_tree_rotate_left(*tree);
+        }
 }
 
 /**
  * avl_insert - insert a new node in an AVL
  * @tree: tree
- * @value: value of the new node
+ * @value:val of the new node
  * Return: node (success) | NULL (failed)
  */
-avl_t *avl_insert(avl_t **tree, int value)
+avl_t *avl_insert(avl_t **tree, int val)
 {
-	bst_t *node;
+	bst_t *node = NULL;
 
-	node = binary_tree_node(NULL, value);
-	if (node == NULL)
-		return (NULL);
-
-	if ((*tree) == NULL || !tree)
+	if ((*tree) == NULL)
 	{
-		(*tree) = node;
-		return (node);
+		(*tree) = binary_tree_node(*tree, val);
+		return (*tree);
 	}
 
-	node = insert_node(tree, node);
-	if (node == NULL)
-		return (NULL);
-
-	update_avl(tree, node);
-	/**something**/
-
+	insert_helper(tree, *tree, &node, val);
 	return (node);
 }
