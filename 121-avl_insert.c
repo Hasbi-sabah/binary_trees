@@ -75,6 +75,7 @@ void update_avl(avl_t **tree, avl_t *node)
 	}
 	if (node->parent == NULL)
 		(*tree) = node;
+	update_avl(tree, node);
 }
 
 /**
@@ -102,6 +103,7 @@ avl_t *avl_insert(avl_t **tree, int value)
 		return (NULL);
 
 	update_avl(tree, node);
+	/**something**/
 
 	return (node);
 }
