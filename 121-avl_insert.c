@@ -3,12 +3,12 @@
 #include <math.h>
 
 /**
- * insertNode - insert node helper
+ * insert_node - insert node helper
  * @tree: BST
  * @node: node to isnert
  * Return: node (success) | NULL (failed)
  */
-bst_t *insertNode(bst_t **tree, bst_t *node)
+bst_t *insert_node(bst_t **tree, bst_t *node)
 {
 	if ((*tree)->n == node->n)
 	{
@@ -19,7 +19,7 @@ bst_t *insertNode(bst_t **tree, bst_t *node)
 	if ((*tree)->n > node->n)
 	{
 		if ((*tree)->left)
-			return (insertNode(&(*tree)->left, node));
+			return (insert_node(&(*tree)->left, node));
 
 		(*tree)->left = node;
 		node->parent = (*tree);
@@ -28,7 +28,7 @@ bst_t *insertNode(bst_t **tree, bst_t *node)
 	else
 	{
 		if ((*tree)->right)
-			return (insertNode(&(*tree)->right, node));
+			return (insert_node(&(*tree)->right, node));
 
 		(*tree)->right = node;
 		node->parent = (*tree);
@@ -38,9 +38,10 @@ bst_t *insertNode(bst_t **tree, bst_t *node)
 
 /**
  * update_avl - fix avl tree after inserting a node
+ * @tree: AVL tree
  * @node: node inserted
  */
-void update_avl(avl_t *node)
+void update_avl(avl_t **tree, avl_t *node)
 {
 	size_t isBalanced;
 
@@ -54,22 +55,26 @@ void update_avl(avl_t *node)
 
 	if ((int)isBalanced < 0)
 	{
-		if (node->parent->left == node)
+		if (node->parent->left == NULL)
+			node = binary_tree_rotate_left(node->parent->parent);
+		else
 		{
 			node = binary_tree_rotate_right(node->parent);
-			node = node->right;
+			node = binary_tree_rotate_left(node->parent);
 		}
-		node = binary_tree_rotate_left(node->parent->parent);
 	}
 	else
 	{
-		if (node->parent->right == node)
+		if (node->parent->right == NULL)
+			node = binary_tree_rotate_right(node->parent->parent);
+		else
 		{
 			node = binary_tree_rotate_left(node->parent);
-			node = node->left;
+			node = binary_tree_rotate_right(node->parent);
 		}
-		node = binary_tree_rotate_right(node->parent->parent);
 	}
+	if (node->parent == NULL)
+		(*tree) = node;
 }
 
 /**
@@ -92,11 +97,11 @@ avl_t *avl_insert(avl_t **tree, int value)
 		return (node);
 	}
 
-	node = insertNode(tree, node);
+	node = insert_node(tree, node);
 	if (node == NULL)
 		return (NULL);
 
-	update_avl(node);
+	update_avl(tree, node);
 
 	return (node);
 }
