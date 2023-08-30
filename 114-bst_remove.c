@@ -1,5 +1,11 @@
 #include "binary_trees.h"
 
+/**
+ * bst_remove - function that removes a node from a BST
+ * @root: root
+ * @value: value
+ * Return: node or 0
+ */
 bst_t *bst_remove(bst_t *root, int value)
 {
 	bst_t *d_node, *successor;
@@ -14,7 +20,6 @@ bst_t *bst_remove(bst_t *root, int value)
 		d_node->n = successor->n;
 		d_node = successor;
 	}
-	
 	if (d_node->left)
 	{
 		d_node->left->parent = d_node->parent;
