@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "binary_trees.h"
 
@@ -19,5 +20,26 @@ int main(void)
     if (!tree)
         return (1);
     binary_tree_print(tree);
+
+    tree = avl_remove(tree, 47);
+    printf("Removed 47...\n");
+    binary_tree_print(tree);
+
+    tree = avl_remove(tree, 79);
+    printf("Removed 79...\n");
+    binary_tree_print(tree);
+
+    tree = avl_remove(tree, 32);
+    printf("Removed 32...\n");
+    binary_tree_print(tree);
+
+    tree = avl_remove(tree, 34);
+    printf("Removed 34...\n");
+    binary_tree_print(tree);
+
+    tree = avl_remove(tree, 22);
+    printf("Removed 22...\n");
+    binary_tree_print(tree);
+    binary_tree_delete(tree);
     return (0);
 }
