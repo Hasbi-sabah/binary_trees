@@ -11,28 +11,28 @@ heap_t *heap_search(heap_t **root, int value, int *flag)
 	if (!(*root)->left)
 	{
 		*flag = -1;
-		return (*root);
+		return (*root)->parent;
 	}
 	else if (!(*root)->right)
 	{
 		*flag = 1;
-		return (*root);
+		return (*root)->parent;
 	}
 	if ((*root)->left)
 	{
-		if (value >= (*root)->left->n)
+		if (value <= (*root)->n)
 		{
 			*flag = -1;
-			return (*root);
+			return (*root)->parent;
 		}
 		heap_search(&(*root)->left, value, flag);
 	}
 	if ((*root)->right)
 	{
-		if (value >= (*root)->right->n)
+		if (value <= (*root)->n)
 		{
 			*flag = 1;
-			return (*root);
+			return (*root)->parent;
 		}
 		heap_search(&(*root)->right, value, flag);
 	}
