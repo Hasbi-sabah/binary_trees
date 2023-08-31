@@ -1,45 +1,51 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "binary_trees.h"
+
+/**
+ * basic_tree - Build a basic binary tree
+ *
+ * Return: A pointer to the created tree
+ */
+binary_tree_t *basic_tree(void)
+{
+    binary_tree_t *root;
+
+    root = binary_tree_node(NULL, 98);
+    root->left = binary_tree_node(root, 90);
+    root->right = binary_tree_node(root, 85);
+    root->left->right = binary_tree_node(root->left, 80);
+    root->left->left = binary_tree_node(root->left, 79);
+    return (root);
+}
 
 /**
  * main - Entry point
  *
- * Return: 0 on success, error code on failure
+ * Return: Always 0 (Success)
  */
 int main(void)
 {
-    avl_t *tree;
-    int array[] = {
-        79, 47, 68, 87, 84, 91, 21, 32, 34, 2,
-        20, 22, 98, 1, 62, 95
-    };
-    size_t n = sizeof(array) / sizeof(array[0]);
+    binary_tree_t *root;
+    int heap;
 
-    tree = array_to_avl(array, n);
-    if (!tree)
-        return (1);
-    binary_tree_print(tree);
+    root = basic_tree();
 
-    tree = avl_remove(tree, 47);
-    printf("Removed 47...\n");
-    binary_tree_print(tree);
+    binary_tree_print(root);
+    heap = binary_tree_is_heap(root);
+    printf("Is %d heap: %d\n", root->n, heap);
+    heap = binary_tree_is_heap(root->left);
+    printf("Is %d heap: %d\n", root->left->n, heap);
 
-    tree = avl_remove(tree, 79);
-    printf("Removed 79...\n");
-    binary_tree_print(tree);
+    root->right->left = binary_tree_node(root->right, 97);
+    binary_tree_print(root);
+    heap = binary_tree_is_heap(root);
+    printf("Is %d heap: %d\n", root->n, heap);
 
-    tree = avl_remove(tree, 32);
-    printf("Removed 32...\n");
-    binary_tree_print(tree);
-
-    tree = avl_remove(tree, 34);
-    printf("Removed 34...\n");
-    binary_tree_print(tree);
-
-    tree = avl_remove(tree, 22);
-    printf("Removed 22...\n");
-    binary_tree_print(tree);
-    binary_tree_delete(tree);
+    root = basic_tree();
+    root->right->right = binary_tree_node(root->right, 79);
+    binary_tree_print(root);
+    heap = binary_tree_is_heap(root);
+    printf("Is %d heap: %d\n", root->n, heap);
     return (0);
 }
