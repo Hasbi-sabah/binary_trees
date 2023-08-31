@@ -1,34 +1,27 @@
 #include "binary_trees.h"
 
-
-typedef struct queueNode
-{
-	heap_t *node;
-	struct queueNode *next;
-} queueNode_t;
-
-typedef struct queue_s
-{
-	struct queueNode *head;
-	struct queueNode *tail;
-} queue_t;
-
 /**
- *
- *
+ * createQueue - create a queue
+ * Return: queue
  */
 queue_t *createQueue()
 {
-	queue_t *queue = (queue_t*)malloc(sizeof(queue_t));
+	queue_t *queue = (queue_t *)malloc(sizeof(queue_t));
 
 	queue->head = NULL;
 	queue->tail = NULL;
-	return queue;
+	return (queue);
 }
 
+/**
+ * enqueue - add a new node to the queue
+ * @queue: queue
+ * @node: node to queue
+ */
 void enqueue(queue_t *queue, heap_t *node)
 {
-	queueNode_t *newNode = (queueNode_t*)malloc(sizeof(queueNode_t));
+	queueNode_t *newNode = (queueNode_t *)malloc(sizeof(queueNode_t));
+
 	newNode->node = node;
 	newNode->next = NULL;
 
@@ -42,13 +35,19 @@ void enqueue(queue_t *queue, heap_t *node)
 	queue->tail = newNode;
 }
 
-binary_tree_t *dequeue(queue_t *queue)
+
+/**
+ * dequeue - pop the head of the queue
+ * @queue: queue
+ * Return: node poped
+ */
+heap_t *dequeue(queue_t *queue)
 {
 	queueNode_t *tmp;
 	heap_t *node;
 
 	if (queue->head == NULL)
-		return NULL;
+		return (NULL);
 
 	tmp = queue->head;
 	node = tmp->node;
@@ -94,25 +93,26 @@ heap_t *levelorder(const heap_t *tree)
 	return (NULL);
 }
 
+/**
+ * heappa_sort - fix position of inserted node to keep tree a Max Heap
+ * @root: Max Heap tree
+ * @node: new node
+ */
 void heappa_sort(heap_t **root, heap_t *node)
 {
-	heap_t *tmpParent, *tmpLeft, *tmpRight;
+	heap_t *tmpParent, *tmpLeft = NULL, *tmpRight = NULL;
 
 	if (node->parent == NULL)
 	{
 		(*root) = node;
 		return;
 	}
-
-	if (node->parent->n > node->n)
+	if (node->parent->n > node->n || (*root)->left == NULL)
 		return;
-
-	tmpParent = node->parent;
-	node->parent = node->parent->parent;
-	tmpLeft = node->left, tmpRight = node->right;
-
-	if (node->parent)
+	tmpParent = node->parent, tmpLeft = node->left, tmpRight = node->right;
+	if (tmpParent->parent)
 	{
+		node->parent = tmpParent->parent;
 		if (node->parent->left == tmpParent)
 			node->parent->left = node;
 		else
@@ -120,23 +120,33 @@ void heappa_sort(heap_t **root, heap_t *node)
 	}
 	if (tmpParent->left == node)
 	{
-		node->left = tmpParent;
-		node->right = tmpParent->right;
+		node->left = tmpParent, node->right = tmpParent->right;
+		if (tmpParent->right)
+			tmpParent->right->parent = node;
 	}
 	else
 	{
-		node->right = tmpParent;
-                node->left = tmpParent->left;
+		node->right = tmpParent, node->left = tmpParent->left;
+		if (tmpParent->left)
+			tmpParent->left->parent = node;
 	}
-	tmpParent->left = tmpLeft, tmpParent->right = tmpRight;
-
-	heappa_sort(root, node);
+	tmpParent->left = NULL, tmpParent->right = NULL;
+	if (tmpLeft)
+		tmpParent->left = tmpLeft, tmpLeft->parent = tmpParent;
+	if (tmpRight)
+		tmpParent->right = tmpRight, tmpRight->parent = tmpParent;
+	if (tmpParent == (*root))
+		*root = node, (*root)->parent = NULL;
+	tmpParent->parent = node;
+	if (node->parent && node->parent->n < node->n)
+		heappa_sort(root, node);
 }
 
 /**
- *
- *
- *
+ * heap_insert - insert a node in the Heap tree
+ * @root: Heap tree
+ * @value: value of the new node
+ * Return: node to the created node
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
