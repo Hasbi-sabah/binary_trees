@@ -94,24 +94,43 @@ heap_t *levelorder(const heap_t *tree)
 	return (NULL);
 }
 
-heap_t *heappa_sort(heap_t **root, heap_t *node)
+void heappa_sort(heap_t **root, heap_t *node)
 {
-	int tmp;
+	heap_t *tmpParent, *tmpLeft, *tmpRight;
 
 	if (node->parent == NULL)
 	{
-		return ((*root) = node);
+		(*root) = node;
+		return;
 	}
 
-	if (node->parent->n >= node->n)
-		return (node);
+	if (node->parent->n > node->n)
+		return;
 
-	tmp = node->n;
-	node->n = node->parent->n;
-	node->parent->n = tmp;
+	tmpParent = node->parent;
+	node->parent = node->parent->parent;
+	tmpLeft = node->left, tmpRight = node->right;
 
-	node = heappa_sort(root, node->parent);
-	return (node);
+	if (node->parent)
+	{
+		if (node->parent->left == tmpParent)
+			node->parent->left = node;
+		else
+			node->parent->right = node;
+	}
+	if (tmpParent->left == node)
+	{
+		node->left = tmpParent;
+		node->right = tmpParent->right;
+	}
+	else
+	{
+		node->right = tmpParent;
+                node->left = tmpParent->left;
+	}
+	tmpParent->left = tmpLeft, tmpParent->right = tmpRight;
+
+	heappa_sort(root, node);
 }
 
 /**
@@ -133,5 +152,6 @@ heap_t *heap_insert(heap_t **root, int value)
 	else
 		pa->right = newNode;
 
-	return (heappa_sort(root, newNode));
+	heappa_sort(root, newNode);
+	return (newNode);
 }
