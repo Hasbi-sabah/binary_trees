@@ -68,7 +68,8 @@ heap_t *dequeue(queue_t *queue)
 heap_t *levelorder(const heap_t *tree)
 {
 	queue_t *queue;
-	heap_t *current;
+	heap_t *current = NULL;
+	int flag = 0;
 
 	if (tree == NULL)
 		return (NULL);
@@ -78,19 +79,23 @@ heap_t *levelorder(const heap_t *tree)
 
 	while (queue->head != NULL)
 	{
-		current = dequeue(queue);
-
-		if (current->left != NULL)
-			enqueue(queue, current->left);
+		if (!flag)
+		{
+			current = dequeue(queue);
+			if (current->left != NULL)
+				enqueue(queue, current->left);
+			else
+				flag = 1;
+			if (current->right != NULL)
+				enqueue(queue, current->right);
+			else
+				flag = 1;
+		}
 		else
-			return (current);
-		if (current->right != NULL)
-			enqueue(queue, current->right);
-		else
-			return (current);
+			dequeue(queue);
 	}
 	free(queue);
-	return (NULL);
+	return (current);
 }
 
 /**
@@ -157,6 +162,9 @@ heap_t *heap_insert(heap_t **root, int value)
 
 	pa = levelorder(*root);
 	newNode = binary_tree_node(pa, value);
+	if (newNode == NULL)
+		return (NULL);
+
 	if (pa->left == NULL)
 		pa->left = newNode;
 	else
